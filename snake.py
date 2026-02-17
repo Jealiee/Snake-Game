@@ -2,10 +2,11 @@ import pygame
 
 
 class Snake:
-    def __init__(self, player_pos):
+    def __init__(self, x, y):
         self.module_size = 40
-        self.player_position = player_pos
         self.direction = pygame.K_RIGHT
+        self.xpos = x
+        self.ypos = y
 
     def snake_movement(self, event):
         if event.type == pygame.KEYDOWN:
@@ -17,8 +18,8 @@ class Snake:
             display_surf,
             emerald,
             (
-                self.player_position[0],
-                self.player_position[1],
+                self.xpos,
+                self.ypos,
                 self.module_size,
                 self.module_size,
             ),
@@ -26,10 +27,10 @@ class Snake:
 
     def update_snake(self, dt):
         if self.direction == pygame.K_RIGHT:
-            self.player_position[0] += int(self.module_size * dt)
+            self.xpos += self.module_size
         elif self.direction == pygame.K_LEFT:
-            self.player_position[0] -= int(self.module_size * dt)
+            self.xpos -= self.module_size
         elif self.direction == pygame.K_DOWN:
-            self.player_position[1] += int(self.module_size * dt)
+            self.ypos += self.module_size
         elif self.direction == pygame.K_UP:
-            self.player_position[1] -= int(self.module_size * dt)
+            self.ypos -= self.module_size
