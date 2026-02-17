@@ -26,10 +26,10 @@ class Snake:
 
     def update_snake(self, dt):
         if self.direction == pygame.K_RIGHT:
-            self.player_position[0] += self.module_size * dt
+            self.player_position[0] += int(self.module_size * dt)
         elif self.direction == pygame.K_LEFT:
-            self.player_position[0] -= self.module_size * dt
+            self.player_position[0] -= int(self.module_size * dt)
         elif self.direction == pygame.K_DOWN:
-            self.player_position -= self.module_size * dt
+            self.player_position[1] += int(self.module_size * dt)
         elif self.direction == pygame.K_UP:
-            self.player_position += self.module_size * dt
+            self.player_position[1] -= int(self.module_size * dt)

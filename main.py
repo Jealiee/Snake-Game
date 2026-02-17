@@ -2,8 +2,7 @@ import pygame
 from snake import Snake
 from grid import Grid
 
-FPS = 40
-DT = 1 / FPS
+FPS = 1
 
 
 class App:
@@ -13,6 +12,7 @@ class App:
         self.size = self.width, self.height = 1280, 720
         self.snake = Snake(pygame.Vector2(self.width / 2, self.height / 2))
         self.clock = pygame.time.Clock()
+        self.grid = Grid()
 
     def on_init(self):
         pygame.init()
@@ -38,12 +38,16 @@ class App:
             for event in pygame.event.get():
                 self.on_event(event)
 
-            self._display_surf.fill((0,0,0))
+            self._display_surf.fill((0, 0, 0))
+            self.grid.draw_grid(
+                self._display_surf, self.snake.module_size, self.width, self.height
+            )
 
-            self.snake.update_snake(DT)
+            self.snake.update_snake(FPS)
             self.snake.draw_snake(self._display_surf)
 
             pygame.display.flip()
+            pygame.display.update()
             self.clock.tick(FPS)
 
 
