@@ -7,6 +7,7 @@ class Snake:
         self.direction = pygame.K_RIGHT
         self.xpos = x
         self.ypos = y
+        self.snake_body = []
 
     def snake_movement(self, event):
         if event.type == pygame.KEYDOWN:
@@ -24,8 +25,27 @@ class Snake:
                 self.module_size,
             ),
         )
+        for body in  self.snake_body:
+            pygame.draw.rect(
+                display_surf,
+                emerald,
+                (
+                    *body,
+                    self.module_size,
+                    self.module_size,
+                ),
+            )
+            pass
 
     def update_snake(self, dt):
+        
+        for x in range(len(self.snake_body)):
+            prev_value = self.snake_body[x]           
+            if x == 0:
+                self.snake_body[x] = (self.xpos, self.ypos)
+            else:
+                self.snake_body[x]=prev_value
+
         if self.direction == pygame.K_RIGHT:
             self.xpos += self.module_size
         elif self.direction == pygame.K_LEFT:

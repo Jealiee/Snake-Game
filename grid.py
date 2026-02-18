@@ -2,9 +2,6 @@ import pygame
 
 
 class Grid:
-    def __init__(self):
-
-        pass
 
     def draw_grid(self, display_surf, module_size, width, height):
 

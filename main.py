@@ -1,6 +1,7 @@
 import pygame
 from snake import Snake
 from grid import Grid
+from food import Food
 
 FPS = 60
 DT = 1 / FPS
@@ -14,9 +15,11 @@ class App:
 
         self.size = self.width, self.height = 520, 520
         self.update_timer = 0
+
         self.snake = Snake(0, 0)
         self.clock = pygame.time.Clock()
         self.grid = Grid()
+        self.food = Food()
 
         self.map = []
         rows = int(self.width / self.snake.module_size)
@@ -63,6 +66,8 @@ class App:
         if not self.on_init():
             self._running = False
 
+        self.food.gen_food(self.width, self.height, self.snake.module_size)
+
         while self._running:
             if self.game_over:
                 self.end_screen()
@@ -74,6 +79,12 @@ class App:
             self.grid.draw_grid(
                 self._display_surf, self.snake.module_size, self.width, self.height
             )
+
+            if self.food.foodx == self.snake.xpos and self.food.foody == self.snake.ypos:
+                self.food.gen_food(self.width, self.height, self.snake.module_size)
+                self.snake.snake_body.append((self.snake.xpos, self.snake.ypos))
+
+            self.food.draw_food(self._display_surf, self.snake.module_size)
 
             self.update_timer += DT
 
