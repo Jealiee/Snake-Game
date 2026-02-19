@@ -14,7 +14,7 @@ class Snake:
             self.direction = event.key
 
     def draw_snake(self, display_surf):
-        color = (0,0,0)
+        color = (0, 0, 0)
         self.snake_head = pygame.draw.rect(
             display_surf,
             color,
@@ -43,7 +43,6 @@ class Snake:
                 self.snake_body[x] = (self.xpos, self.ypos)
             else:
                 self.snake_body[x] = self.snake_body[x - 1]
-            print(self.snake_body[x])
 
         if self.direction == pygame.K_RIGHT:
             self.xpos += self.module_size

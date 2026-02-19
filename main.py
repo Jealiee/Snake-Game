@@ -1,6 +1,6 @@
 import pygame
 from snake import Snake
-from grid import Grid
+from grid import Grid, Outliner
 from food import Food
 
 FPS = 60
@@ -15,12 +15,15 @@ class App:
 
         self.size = self.width, self.height = 520, 520
         self.update_timer = 0
-        self.background = pygame.transform.scale(pygame.image.load('grass.jpg'),(self.size))
+        self.background = pygame.transform.scale(
+            pygame.image.load("grass.jpg"), (self.size)
+        )
 
         self.snake = Snake(0, 0)
         self.clock = pygame.time.Clock()
         self.grid = Grid()
         self.food = Food()
+        self.outliner = Outliner()
 
         self.map = []
         rows = int(self.width / self.snake.module_size)
@@ -57,9 +60,11 @@ class App:
 
     def end_screen(self):
 
-        font = pygame.font.SysFont("comicsans", 80)
-        text = font.render("Game Over", 1, (255, 255, 255))
-        self._display_surf.blit(text, (0, 0))
+        font = pygame.font.Font("PressStart2P.ttf", 50)
+        text = font.render("Game Over", 1, (0,0,0))
+        text_rect = text.get_rect(center=(self.width / 2, self.height / 2))
+        text_outline = self.outliner.outline_surface(text,(255,255,255))
+        self._display_surf.blit(text_outline, text_rect)
         pygame.display.update()
 
     def on_event(self, event):
@@ -81,37 +86,38 @@ class App:
             if self.game_over:
                 self.end_screen()
 
-            for event in pygame.event.get():
-                self.on_event(event)
+            if not self.game_over:
+                for event in pygame.event.get():
+                    self.on_event(event)
 
-            self._display_surf.fill((0, 0, 0))
-            self._display_surf.blit(self.background,(0,0))
-            self.grid.draw_grid(
-                self._display_surf, self.snake.module_size, self.width, self.height
-            )
+                self._display_surf.fill((0, 0, 0))
+                self._display_surf.blit(self.background, (0, 0))
+                self.grid.draw_grid(
+                    self._display_surf, self.snake.module_size, self.width, self.height
+                )
 
-            if (
-                self.food.foodx == self.snake.xpos
-                and self.food.foody == self.snake.ypos
-            ):
-                self.food.gen_food(self.width, self.height, self.snake.module_size)
-                self.snake.snake_body.append((self.snake.xpos, self.snake.ypos))
+                if (
+                    self.food.foodx == self.snake.xpos
+                    and self.food.foody == self.snake.ypos
+                ):
+                    self.food.gen_food(self.width, self.height, self.snake.module_size)
+                    self.snake.snake_body.append((self.snake.xpos, self.snake.ypos))
 
-            self.food.draw_food(self._display_surf, self.snake.module_size)
+                self.food.draw_food(self._display_surf, self.snake.module_size)
 
-            self.update_timer += DT
+                self.update_timer += DT
 
-            if self.update_timer >= 0.5:
-                self.snake.update_snake(DT)
-                #self.loss_checker()
-                self.boundary_hit()
-                self.update_timer = 0
+                if self.update_timer >= 0.5:
+                    self.snake.update_snake(DT)
+                    self.loss_checker()
+                    self.boundary_hit()
+                    self.update_timer = 0
 
-            self.snake.draw_snake(self._display_surf)
+                self.snake.draw_snake(self._display_surf)
 
-            pygame.display.flip()
-            pygame.display.update()
-            self.clock.tick(FPS)
+                pygame.display.flip()
+                pygame.display.update()
+                self.clock.tick(FPS)
 
 
 if __name__ == "__main__":
