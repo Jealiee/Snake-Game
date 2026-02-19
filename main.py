@@ -15,6 +15,7 @@ class App:
 
         self.size = self.width, self.height = 520, 520
         self.update_timer = 0
+        self.background = pygame.transform.scale(pygame.image.load('grass.jpg'),(self.size))
 
         self.snake = Snake(0, 0)
         self.clock = pygame.time.Clock()
@@ -46,6 +47,14 @@ class App:
         elif self.snake.ypos >= self.height:
             self.snake.ypos = 0
 
+    def loss_checker(self):
+        for i in range(len(self.snake.snake_body)):
+            if (
+                self.snake.xpos in self.snake.snake_body[i]
+                and self.snake.ypos in self.snake.snake_body[i]
+            ):
+                self.game_over = True
+
     def end_screen(self):
 
         font = pygame.font.SysFont("comicsans", 80)
@@ -76,11 +85,15 @@ class App:
                 self.on_event(event)
 
             self._display_surf.fill((0, 0, 0))
+            self._display_surf.blit(self.background,(0,0))
             self.grid.draw_grid(
                 self._display_surf, self.snake.module_size, self.width, self.height
             )
 
-            if self.food.foodx == self.snake.xpos and self.food.foody == self.snake.ypos:
+            if (
+                self.food.foodx == self.snake.xpos
+                and self.food.foody == self.snake.ypos
+            ):
                 self.food.gen_food(self.width, self.height, self.snake.module_size)
                 self.snake.snake_body.append((self.snake.xpos, self.snake.ypos))
 
@@ -88,8 +101,9 @@ class App:
 
             self.update_timer += DT
 
-            if self.update_timer >= 1:
+            if self.update_timer >= 0.5:
                 self.snake.update_snake(DT)
+                #self.loss_checker()
                 self.boundary_hit()
                 self.update_timer = 0
 

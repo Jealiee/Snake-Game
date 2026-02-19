@@ -14,10 +14,10 @@ class Snake:
             self.direction = event.key
 
     def draw_snake(self, display_surf):
-        emerald = (80, 220, 100)
+        color = (0,0,0)
         self.snake_head = pygame.draw.rect(
             display_surf,
-            emerald,
+            color,
             (
                 self.xpos,
                 self.ypos,
@@ -25,26 +25,25 @@ class Snake:
                 self.module_size,
             ),
         )
-        for body in  self.snake_body:
+        for body in self.snake_body:
             pygame.draw.rect(
                 display_surf,
-                emerald,
+                color,
                 (
                     *body,
                     self.module_size,
                     self.module_size,
                 ),
             )
-            pass
 
     def update_snake(self, dt):
-        
-        for x in range(len(self.snake_body)):
-            prev_value = self.snake_body[x]           
+
+        for x in range(len(self.snake_body) - 1, -1, -1):
             if x == 0:
                 self.snake_body[x] = (self.xpos, self.ypos)
             else:
-                self.snake_body[x]=prev_value
+                self.snake_body[x] = self.snake_body[x - 1]
+            print(self.snake_body[x])
 
         if self.direction == pygame.K_RIGHT:
             self.xpos += self.module_size
