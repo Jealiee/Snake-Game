@@ -8,34 +8,49 @@ class Snake:
         self.xpos = x
         self.ypos = y
         self.snake_body = []
+    
 
     def snake_movement(self, event):
         if event.type == pygame.KEYDOWN:
             self.direction = event.key
 
     def draw_snake(self, display_surf):
-        color = (0, 0, 0)
-        self.snake_head = pygame.draw.rect(
-            display_surf,
-            color,
-            (
-                self.xpos,
-                self.ypos,
-                self.module_size,
-                self.module_size,
-            ),
-        )
-        for body in self.snake_body:
-            pygame.draw.rect(
-                display_surf,
-                color,
-                (
-                    body[0],
-                    body[1],
-                    self.module_size,
-                    self.module_size,
-                ),
-            )
+
+        self.snake_head = pygame.transform.scale(
+            pygame.image.load("snake_head.png"), (self.module_size, self.module_size))
+        self.tail = pygame.transform.scale(
+            pygame.image.load('snake_tail.png'), (self.module_size, self.module_size))
+        self.body = pygame.transform.scale(
+            pygame.image.load('snake_body.png'), (self.module_size, self.module_size))
+
+        if self.direction == pygame.K_DOWN:
+            self.snake_head = pygame.transform.rotate(self.snake_head, 180)
+        elif self.direction == pygame.K_LEFT:
+            self.snake_head = pygame.transform.rotate(self.snake_head, 90)
+        elif self.direction == pygame.K_RIGHT:
+            self.snake_head = pygame.transform.rotate(self.snake_head, 270)
+
+        display_surf.blit(self.snake_head, (self.xpos, self.ypos))
+
+        for i in range (len(self.snake_body)):
+            if i == len(self.snake_body):
+                if self.direction == pygame.K_DOWN:
+                    self.tail = pygame.transform.rotate(self.tail, 180)
+                elif self.direction == pygame.K_LEFT:
+                    self.tail = pygame.transform.rotate(self.tail, 90)
+                elif self.direction == pygame.K_RIGHT:
+                    self.tail = pygame.transform.rotate(self.tail, 270)
+
+                display_surf.blit(self.tail, (self.snake_body[i][0], self.snake_body[i][1]))
+            else:
+                if self.direction == pygame.K_DOWN:
+                    self.body = pygame.transform.rotate(self.body, 180)
+                elif self.direction == pygame.K_LEFT:
+                    self.body = pygame.transform.rotate(self.body, 90)
+                elif self.direction == pygame.K_RIGHT:
+                    self.body = pygame.transform.rotate(self.body, 270)
+
+                display_surf.blit(self.body, (self.snake_body[i][0], self.snake_body[i][1]))
 
     def update_snake(self):
 
