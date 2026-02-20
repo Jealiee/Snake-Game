@@ -1,6 +1,6 @@
 import pygame
 from snake import Snake
-from grid import Grid, Outliner
+from grid import Grid
 from food import Food
 
 FPS = 60
@@ -23,7 +23,6 @@ class App:
         self.clock = pygame.time.Clock()
         self.grid = Grid()
         self.food = Food()
-        self.outliner = Outliner()
 
         self.map = []
         rows = int(self.width / self.snake.module_size)
