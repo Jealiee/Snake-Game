@@ -12,7 +12,7 @@ class Grid:
             pygame.draw.line(display_surf, color, (0, i), (width, i))
 
 
-# Does not work for text, but i wrote it so it stays
+# Does not work for text, but i wrote already it so it stays for funsies :p
 class Outliner:
     def __init__(self):
         self.conv_mask = pygame.mask.Mask((3, 3), fill=True)
@@ -23,6 +23,6 @@ class Outliner:
             setcolor=color, unsetcolor=surface.get_colorkey()
         )
 
-        surface_outline.blit(surface,(1,1))
+        surface_outline.blit(surface, (1, 1))
 
         return surface_outline

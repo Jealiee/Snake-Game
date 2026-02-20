@@ -30,13 +30,14 @@ class Snake:
                 display_surf,
                 color,
                 (
-                    *body,
+                    body[0],
+                    body[1],
                     self.module_size,
                     self.module_size,
                 ),
             )
 
-    def update_snake(self, dt):
+    def update_snake(self):
 
         for x in range(len(self.snake_body) - 1, -1, -1):
             if x == 0:

@@ -53,27 +53,49 @@ class App:
     def loss_checker(self):
         for i in range(len(self.snake.snake_body)):
             if (
-                self.snake.xpos in self.snake.snake_body[i]
-                and self.snake.ypos in self.snake.snake_body[i]
+                self.snake.xpos == self.snake.snake_body[i][0]
+                and self.snake.ypos == self.snake.snake_body[i][1]
             ):
                 self.game_over = True
 
     def end_screen(self):
 
         font = pygame.font.Font("PressStart2P.ttf", 50)
-        text = font.render("Game Over", 1, (0,0,0))
+        text = font.render("Game Over", 1, (0, 0, 0))
         text_rect = text.get_rect(center=(self.width / 2, self.height / 2))
-        text_outline = self.outliner.outline_surface(text,(255,255,255))
-        self._display_surf.blit(text_outline, text_rect)
+
+        font2 = pygame.font.Font("PressStart2P.ttf", 20)
+        text2 = font2.render("Press SPACE to restart", 1, (0, 0, 0))
+        text2_rect = text2.get_rect(center=(self.width / 2, self.height / 2 - 40))
+
+        self._display_surf.blit(text, text_rect)
+        self._display_surf.blit(text2, text2_rect)
+
         pygame.display.update()
 
     def on_event(self, event):
+
+        if self.game_over:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    theApp = App()
+                    theApp.on_execute()
+                elif event.key == pygame.K_ESCAPE:
+                    self._running = False
+                elif event.type == pygame.QUIT:
+                    self._running = False
 
         if event.type == pygame.QUIT:
             self._running = False
 
         elif event.type == pygame.KEYDOWN:
-            self.snake.snake_movement(event)
+            if (
+                event.key == pygame.K_LEFT
+                or event.key == pygame.K_RIGHT
+                or event.key == pygame.K_UP
+                or event.key == pygame.K_DOWN
+            ):
+                self.snake.snake_movement(event)
 
     def on_execute(self):
 
@@ -85,6 +107,8 @@ class App:
         while self._running:
             if self.game_over:
                 self.end_screen()
+                for event in pygame.event.get():
+                    self.on_event(event)
 
             if not self.game_over:
                 for event in pygame.event.get():
@@ -101,14 +125,14 @@ class App:
                     and self.food.foody == self.snake.ypos
                 ):
                     self.food.gen_food(self.width, self.height, self.snake.module_size)
-                    self.snake.snake_body.append((self.snake.xpos, self.snake.ypos))
+                    self.snake.snake_body.append([self.snake.xpos, self.snake.ypos])
 
                 self.food.draw_food(self._display_surf, self.snake.module_size)
 
                 self.update_timer += DT
 
                 if self.update_timer >= 0.5:
-                    self.snake.update_snake(DT)
+                    self.snake.update_snake()
                     self.loss_checker()
                     self.boundary_hit()
                     self.update_timer = 0
