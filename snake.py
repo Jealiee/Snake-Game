@@ -30,6 +30,8 @@ class Snake:
         display_surf.blit(self.snake_head, (self.xpos, self.ypos))
 
         for i in range(len(self.snake_body)):
+            rotation = 0
+
             if i == len(self.snake_body) - 1:
                 self.tail = pygame.transform.scale(
                     pygame.image.load("snake_tail.png"),
@@ -44,12 +46,13 @@ class Snake:
                     before_tail = self.snake_body[i - 1]
 
                 if tail[0] > before_tail[0]:
-                    self.tail = pygame.transform.rotate(self.tail, 90)
+                    rotation = 90
                 elif tail[0] < before_tail[0]:
-                    self.tail = pygame.transform.rotate(self.tail, 270)
+                    rotation = 270
                 elif tail[1] < before_tail[1]:
-                    self.tail = pygame.transform.rotate(self.tail, 180)
+                    rotation = 180
 
+                self.tail = pygame.transform.rotate(self.tail, rotation)
                 display_surf.blit(
                     self.tail, (self.snake_body[i][0], self.snake_body[i][1])
                 )
@@ -72,49 +75,64 @@ class Snake:
 
                 if is_body_same_row:
                     if body_front[0] > curr_body[0]:
-                        self.body = pygame.transform.rotate(self.body, 90)
+                        rotation = 90
                     else:
-                        self.body = pygame.transform.rotate(self.body, 270)
+                        rotation = 270
 
                 # no need to check the opposite case bc its base img direction
                 elif is_body_same_col:
                     if body_front[1] > curr_body[1]:
-                        self.body = pygame.transform.rotate(self.body, 180)
+                        rotation = 180
 
+                # TODO : fix
                 else:
                     self.body = pygame.transform.scale(
                         pygame.image.load("snake_corner.png"),
                         (self.module_size, self.module_size),
                     )
 
-                    # TODO: fix 
-                    if (
-                        body_front[0] > body_behind[0]
-                        and body_front[1] < body_behind[1]
-                    ) or (
-                        body_front[0] < body_behind[0]
-                        and body_front[1] > body_behind[1]
-                    ):
-                        self.body = pygame.transform.rotate(self.body, 270)
+                    next_same_row = body_front[1] == curr_body[1]
+                    next_same_col = body_front[0] == curr_body[0]
+                    
+                    rotation = 0
 
-                    elif (
-                        body_front[0] < body_behind[0]
-                        and body_front[1] > body_behind[1]
-                    ) or (
-                        body_front[0] > body_behind[0]
-                        and body_front[1] < body_behind[1]
-                    ):
-                        self.body = pygame.transform.rotate(self.body, 90)
+                    if next_same_row:
+                        #top to bottom 
+                        if curr_body[1] > body_behind[1]:
+                            # left to right
+                            if body_front[0] > curr_body[0]:
+                                rotation = 0
+                            # right to left
+                            elif body_front[0] < curr_body[0]:
+                                rotation = 90
+                        #bottom to top
+                        elif curr_body[1] < body_behind[1]:
+                            #left to right
+                            if body_front[0] > curr_body[0]:
+                                rotation = 270
+                            # right to left
+                            elif body_front[0] < curr_body[0]:
+                                rotation = 180    
+                        
+                    elif next_same_col:
+                        # right to left
+                        if curr_body[0] < body_behind[0]:
+                            # top to bot
+                            if curr_body[1] < body_front [1]:
+                                rotation = 270
+                            # bot to top
+                            elif curr_body[1] > body_front [1]:
+                                rotation = 0
+                        # left to right
+                        elif curr_body [0] > body_behind [0]:
+                            # top to bot
+                            if curr_body[1] < body_front [1]:
+                                rotation = 180
+                            # bot to top
+                            elif curr_body[1] > body_front [1]:
+                                rotation = 90
 
-                    elif (
-                        body_front[0] > body_behind[0]
-                        and body_front[1] > body_behind[1]
-                    ) or (
-                        body_front[0] < body_behind[0]
-                        and body_front[1] < body_behind[1]
-                    ):
-                        self.body = pygame.transform.rotate(self.body, 180)
-
+                self.body = pygame.transform.rotate(self.body, rotation)
                 display_surf.blit(
                     self.body, (self.snake_body[i][0], self.snake_body[i][1])
                 )
